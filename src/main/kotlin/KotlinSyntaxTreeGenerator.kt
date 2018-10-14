@@ -4,10 +4,13 @@ import org.antlr.v4.runtime.RuleContext
 import org.antlr.v4.runtime.Token
 import org.antlr.v4.runtime.tree.ParseTree
 import java.nio.file.Path
-import java.util.LinkedHashMap
 
 object KotlinSyntaxTreeGenerator {
 
+    /**
+     * Parses file with given [filePath] and creates Abstract Syntax Tree
+     * @return [Map] that contains created AST
+     */
     fun generateTree(filePath: Path): Map<String, Any>? {
         val lexer = KotlinLexer(CharStreams.fromPath(filePath))
         val parser = KotlinParser(CommonTokenStream(lexer))
@@ -15,22 +18,21 @@ object KotlinSyntaxTreeGenerator {
         return parser.kotlinFile().toMap()
     }
 
-
-    private fun ParseTree.toMap(): Map<String, Any>? {
-        val map = LinkedHashMap<String, Any>()
-
-        val node = payload
+    /** Traverse through the tree and create [Map] out of it */
+    private fun ParseTree.toMap(): Map<String, Any> = payload.let { node ->
         when (node) {
-            is Token -> map[node.getName()] = node.text
+            is Token -> mapOf(node.getName() to node.text) // leaf node
             is RuleContext -> (0 until childCount)
-                    .mapNotNull { getChild(it).toMap()?.takeIf { it.isNotEmpty() } }
-                    .let { map[node.getName()] = if (it.size == 1) it[0] else it }
-        }
+                    .map { getChild(it).toMap() } // map children IDs to their subtrees
+                    .let { mapOf(node.getName() to if (it.size == 1) it[0] else it) }
 
-        return map
+            else -> throw ClassCastException("Unknown tree element")
+        }
     }
 
+    /** @return name of the token */
     private fun Token.getName() = KotlinLexer.VOCABULARY.getSymbolicName(type)
 
+    /** @return name of the rule */
     private fun RuleContext.getName() = KotlinParser.ruleNames[ruleIndex]
 }

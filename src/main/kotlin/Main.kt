@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
     val tree = KotlinSyntaxTreeGenerator.generateTree(File(INPUT_FILE).toPath())
 
     println("Converting to JSON...")
-    val output = gson.toJson(tree?.toMap())
+    val output = gson.toJson(tree)
 
     println("Writing output...")
     File(OUTPUT_FILE).writeText(output)

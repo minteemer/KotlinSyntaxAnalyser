@@ -5,47 +5,53 @@ import java.io.*
 typealias Строка = String
 
 object TestObject{
-    val lazyString: Строка by lazy { "We're no strangers to love" }
+    val lazyString: Строка? by lazy { "We're no strangers to love" }
 }
 
 fun main(args: Array<String>) {
 
     println(
-        TestObject.lazyString
-            ?.plus("You know the rules and so do I")
-            ?: "A full commitment's what I'm thinking of"
+            TestObject.lazyString
+                    ?.plus("You know the rules and so do I")
+                    ?: "A full commitment's what I'm thinking of"
     )
 
     if (true){
-        print("You wouldn't get this from any other guy")
+        println("You wouldn't get this from any other guy")
     } else if (true) {
-        print("I just wanna tell you how I'm feeling")
+        println("I just wanna tell you how I'm feeling")
     } else {
-        print("Gotta make you understand")
+        println("Gotta make you understand")
     }
 
-    val sum = 1 + 10
+    var sum = 1 + 10
     val mul = 1*0
     val sub = 1.1e-3 - 1
     val div = 1.0/1
     val mod = 2%1
 
-    when(sum){
-        16 ->  print("Never gonna give you up")
-        in 1..10 -> print("Never gonna let you down")
-        is Long -> print("Never gonna run around and desert you")
-        else -> print("Never gonna make you cry")
+    sum = sum(15, 10)
+    val heh = 1.applyFunc(2){ a, b -> a + b }
+
+    when(1 as Number){
+        16 ->  println("Never gonna give you up")
+        in 1..10 -> println("Never gonna let you down")
+        is Long -> println("Never gonna run around and desert you")
+        else -> println("Never gonna make you cry")
     }
 
-    for (i in (1..sum(15, 10))){
-        print("Never gonna say goodbye")
+    for (i in (1..15)){
+        println("Never gonna say goodbye")
     }
 
     do {
-        print("Never gonna tell a lie and hurt you")
+        println("Never gonna tell a lie and hurt you")
     } while (false)
 }
 
 fun sum(a: Int, b:Int):Int {
     return a + b
 }
+
+/** Applies [func] to this object and [b] */
+fun <A, B, R> A.applyFunc(b: B, func: (A, B) -> R): R = func(this, b)
