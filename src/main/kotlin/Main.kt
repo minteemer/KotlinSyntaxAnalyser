@@ -1,4 +1,3 @@
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
@@ -13,39 +12,40 @@ const val INPUT_FILE = "in.txt"
 const val OUTPUT_FILE = "out.txt"
 
 private val gson = GsonBuilder().setPrettyPrinting().create()
+private val ruleNames = KotlinParser.ruleNames.toList()
 
 fun main(args: Array<String>) {
     val input = CharStreams.fromPath(File(INPUT_FILE).toPath())
+
     val lexer = KotlinLexer(input)
     val parser = KotlinParser(CommonTokenStream(lexer))
-
     val tree = parser.kotlinFile()
 
-    println(gson.toJson(tree.toMap()))
+    val output = gson.toJson(tree.toMap())
+    File(OUTPUT_FILE).writeText(output)
 }
 
 
-fun ParseTree.toMap(): Map<String, Any> = LinkedHashMap<String, Any>().also { map -> traverse(this, map) }
+fun ParseTree.toMap(): Map<String, Any>? {
+    val map = LinkedHashMap<String, Any>()
+    val node = payload
 
-fun traverse(tree: ParseTree, map: MutableMap<String, Any>) {
-    val node = tree.payload
-    val ruleNames = KotlinParser.ruleNames.toList()
-
-    when(node){
-        is Token -> {
-            map["TokenType"] = KotlinLexer.VOCABULARY.getSymbolicName(node.type)
-            map["Lexeme"] = node.text
-        }
+    when (node) {
+        is Token -> map[KotlinLexer.VOCABULARY.getSymbolicName(node.type)] = node.text
         is RuleContext -> {
-            val children = ArrayList<Map<String, Any>>()
-            val name = ruleNames[node.ruleIndex]
-            map[name] = children
+            val ruleName = ruleNames[node.ruleIndex]
 
-            for (i in 0 until tree.childCount) {
-                val nested = LinkedHashMap<String, Any>()
-                children.add(nested)
-                traverse(tree.getChild(i), nested)
+            if (childCount == 1) {
+                getChild(0).toMap()?.let { map[ruleName] = it }
+            } else if (childCount > 1) {
+                val childrenList = ArrayList<Map<String, Any>>()
+                map[ruleName] = childrenList
+
+                for (i in 0 until childCount)
+                    getChild(i).toMap()?.let { childrenList.add(it) }
             }
         }
     }
+
+    return map.takeIf { it.size > 0 }
 }
