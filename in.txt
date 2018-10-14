@@ -1,14 +1,51 @@
-import com.google.gson.GsonBuilder
-import java.io.File
+package test.input
 
-const val INPUT_FILE = "in.txt"
-const val OUTPUT_FILE = "out.txt"
+import java.io.*
 
-private val gson = GsonBuilder()
+typealias Строка = String
+
+object TestObject{
+    val lazyString: Строка by lazy { "We're no strangers to love" }
+}
 
 fun main(args: Array<String>) {
-    val tree = KotlinSyntaxTreeGenerator.generateTree(File(INPUT_FILE).toPath())
 
-    val output = gson.toJson(tree?.toMap())
-    File(OUTPUT_FILE).writeText(output)
+    println(
+        TestObject.lazyString
+            ?.plus("You know the rules and so do I")
+            ?: "A full commitment's what I'm thinking of"
+    )
+
+    if (true){
+        print("You wouldn't get this from any other guy")
+    } else if (true) {
+        print("I just wanna tell you how I'm feeling")
+    } else {
+        print("Gotta make you understand")
+    }
+
+    val sum = 1 + 10
+    val mul = 1*0
+    val sub = 1.1e-3 - 1
+    val div = 1.0/1
+    val mod = 2%1
+
+    when(sum){
+        16 ->  print("Never gonna give you up")
+        in 1..10 -> print("Never gonna let you down")
+        is Long -> print("Never gonna run around and desert you")
+        else -> print("Never gonna make you cry")
+    }
+
+    for (i in (1..sum(15, 10))){
+        print("Never gonna say goodbye")
+    }
+
+    do {
+        print("Never gonna tell a lie and hurt you")
+    } while (false)
+}
+
+fun sum(a: Int, b:Int):Int {
+    return a + b
 }
