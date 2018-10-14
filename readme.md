@@ -43,7 +43,7 @@ To run unit tests run `Tasks/verification/test` task in Gradle window or tests i
 `src/test/kotlin/` folder.
 
 ## Used Kotlin grammar
-The grammar is based on this [Kotlin grammar description](https://github.com/JetBrains/kotlin/tree/master/grammar). 
+The grammar is based on [Kotlin grammar description](https://github.com/JetBrains/kotlin/tree/master/grammar). 
 
 ### Symbols and naming
 
@@ -53,13 +53,13 @@ Each _production_ starts with `::=`.
 
 ### EBNF expressions
 
-Operator `|` denotes _alternative_.
-Operator `*` denotes _iteration_ (zero or more).
-Operator `+` denotes _iteration_ (one or more).
-Operator `[`something`]` denotes _option_ (zero or one).
-alpha`{`beta`}` denotes a nonempty _beta_-separated list of _alpha_'s.
+Operator `|` denotes _alternative_.  
+Operator `*` denotes _iteration_ (zero or more).  
+Operator `+` denotes _iteration_ (one or more).  
+Operator `[`something`]` denotes _option_ (zero or one).  
+alpha`{`beta`}` denotes a nonempty _beta_-separated list of _alpha_'s.  
 
-```EBNF
+```ebnf
 annotations ::=  (annotation | annotationList)*
 
 annotation ::= "@" [annotationUseSiteTarget ":"] unescapedAnnotation
