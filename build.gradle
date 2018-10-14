@@ -38,6 +38,10 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.0.3'
 }
 
+test {
+    useJUnitPlatform()
+}
+
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
